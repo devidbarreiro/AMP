@@ -2,6 +2,7 @@ node_modules/
 dist/
 *.db
 .env
+docs/
 website/node_modules/
 website/out/
 website/.next/
