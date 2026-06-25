@@ -1,9 +1,12 @@
+import { readFileSync, existsSync } from 'node:fs';
 import { getPendingOutbound, markDelivered, markFailed, type Message } from '../store/inbox.js';
 import { getPeer, listPeers, updatePeerSeen } from '../contacts/peers.js';
 import { ensureIdentity } from '../crypto/identity.js';
 import { encryptForPeer } from '../crypto/encryption.js';
 import util from 'tweetnacl-util';
 const { encodeBase64, decodeBase64 } = util;
+
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 const DELIVERY_INTERVAL_MS = 5_000;
 const MAX_RETRIES = 10;
@@ -100,11 +103,21 @@ async function deliverMessage(
   host: string,
   port: number,
 ): Promise<void> {
+  let fileData: string | undefined;
+  if (msg.filePath && existsSync(msg.filePath)) {
+    const stat = require('node:fs').statSync(msg.filePath);
+    if (stat.size > MAX_FILE_SIZE) {
+      throw new Error(`File too large: ${stat.size} bytes (max ${MAX_FILE_SIZE})`);
+    }
+    fileData = readFileSync(msg.filePath).toString('base64');
+  }
+
   const payload = JSON.stringify({
     type: 'message',
     id: msg.id,
     content: msg.content,
     fileName: msg.fileName,
+    fileData,
     timestamp: Date.now(),
   });
 

@@ -1,7 +1,8 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { hostname } from 'node:os';
-import { ensureIdentity, fingerprint } from '../crypto/identity.js';
+import { join } from 'node:path';
+import { ensureIdentity, fingerprint, getAmpDir } from '../crypto/identity.js';
 import { receiveInbound, getPendingOutbound, markDelivered, getInboxStats } from '../store/inbox.js';
 import { getPeerByPublicKey, updatePeerSeen, listPeers } from '../contacts/peers.js';
 import { verifySignature } from '../crypto/identity.js';
@@ -33,10 +34,21 @@ interface AmpDrainRequest {
   publicKey: string;
 }
 
+const MAX_BODY_SIZE = 75 * 1024 * 1024; // 75MB (file + encryption overhead)
+
 function parseBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
-    req.on('data', (chunk: Buffer) => chunks.push(chunk));
+    let size = 0;
+    req.on('data', (chunk: Buffer) => {
+      size += chunk.length;
+      if (size > MAX_BODY_SIZE) {
+        req.destroy();
+        reject(new Error('Body too large'));
+        return;
+      }
+      chunks.push(chunk);
+    });
     req.on('end', () => resolve(Buffer.concat(chunks).toString()));
     req.on('error', reject);
   });
@@ -97,12 +109,25 @@ export function startDaemon(config: Partial<DaemonConfig> = {}): void {
         const plaintext = decryptFromPeer(envelope, identity.secretKey);
         const message = JSON.parse(new TextDecoder().decode(plaintext)) as AmpMessage;
 
+        // Save received file to disk
+        let savedFilePath: string | undefined;
+        let savedFileSize: number | undefined;
+        if (message.fileData && message.fileName) {
+          const filesDir = join(getAmpDir(), 'files', peer.alias);
+          mkdirSync(filesDir, { recursive: true });
+          const fileBuffer = Buffer.from(message.fileData, 'base64');
+          savedFilePath = join(filesDir, message.fileName);
+          writeFileSync(savedFilePath, fileBuffer);
+          savedFileSize = fileBuffer.length;
+          console.log(`[receive] File saved: ${savedFilePath} (${savedFileSize} bytes)`);
+        }
+
         const id = receiveInbound(
           peer.alias,
           message.content ?? '',
-          undefined,
+          savedFilePath,
           message.fileName,
-          message.fileData ? Buffer.from(message.fileData, 'base64').length : undefined,
+          savedFileSize,
         );
 
         const addr = `${req.socket.remoteAddress}:${req.socket.remotePort}`;
