@@ -1,0 +1,34 @@
+{
+  "name": "amp-protocol",
+  "version": "0.1.0",
+  "description": "AMP — Agent Messaging Protocol. P2P messaging for AI agents.",
+  "type": "module",
+  "bin": {
+    "amp": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/daemon/index.ts",
+    "start": "node dist/daemon/index.ts",
+    "test": "node --test src/**/*.test.ts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "bonjour-service": "^1.3.0",
+    "chalk": "^5.4.0",
+    "commander": "^13.0.0",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
