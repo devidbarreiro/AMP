@@ -4,6 +4,8 @@ import NetworkDiagram from "./components/NetworkDiagram";
 import CopyPill from "./components/CopyPill";
 import Terminal from "./components/Terminal";
 import Hero3DWrapper from "./components/Hero3DWrapper";
+import ArchitectureDiagram from "./components/ArchitectureDiagram";
+import AnimatedCode from "./components/AnimatedCode";
 
 export default function Home() {
   return (
@@ -102,21 +104,7 @@ export default function Home() {
             </p>
           </ScrollReveal>
 
-          <ScrollReveal delay={0.15}>
-            <div className="bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-lg p-6 overflow-x-auto">
-              <pre className="text-[13px] leading-relaxed text-zinc-500 font-mono whitespace-pre">{`  Your Machine                                Their Machine
-┌──────────────┐                          ┌──────────────┐
-│ Claude Code  │                          │   Cursor     │
-│      ↕ MCP   │                          │      ↕ MCP   │
-│  AMP Daemon  │ ◄── encrypted P2P ────► │  AMP Daemon  │
-│    :9800     │                          │    :9800     │
-│  ┌────────┐  │                          │  ┌────────┐  │
-│  │ SQLite │  │     Ed25519 + X25519     │  │ SQLite │  │
-│  │ inbox  │  │     NaCl SecretBox       │  │ inbox  │  │
-│  └────────┘  │                          │  └────────┘  │
-└──────────────┘                          └──────────────┘`}</pre>
-            </div>
-          </ScrollReveal>
+          <ArchitectureDiagram />
         </div>
       </section>
 
@@ -160,30 +148,30 @@ export default function Home() {
                 </p>
               </div>
             </ScrollReveal>
-            <ScrollReveal delay={0.2}>
-              <div className="bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-lg p-5">
-                <pre className="text-[13px] leading-relaxed text-zinc-500 font-mono">{`# peer appears on LAN
-amp peers
-  javier  192.168.1.42  (mDNS)  12ms
-
-# or across the internet
-  maria   100.64.0.3    (TS)    34ms`}</pre>
-              </div>
-            </ScrollReveal>
+            <AnimatedCode
+              title="peer discovery"
+              lines={[
+                { text: '$ amp peers', color: 'command', delay: 200 },
+                { text: '', delay: 100 },
+                { text: '  javier  192.168.1.42  (mDNS)  12ms', color: 'success', delay: 300 },
+                { text: '  maria   100.64.0.3    (TS)    34ms', color: 'accent', delay: 300 },
+                { text: '  pablo   83.45.12.99   (STUN)  89ms', color: 'peer', delay: 300 },
+              ]}
+            />
           </div>
 
           {/* Feature 4 + 5: reversed layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-            <ScrollReveal delay={0.1}>
-              <div className="bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-lg p-5">
-                <pre className="text-[13px] leading-relaxed text-zinc-500 font-mono">{`# peer goes offline? no problem
-amp send javier "Deploy is ready"
-  ⏳ Queued (javier offline)
-
-# they come back online...
-  ✓ Delivered to javier (auto)`}</pre>
-              </div>
-            </ScrollReveal>
+            <AnimatedCode
+              title="offline delivery"
+              lines={[
+                { text: '$ amp send javier "Deploy is ready"', color: 'command', delay: 200 },
+                { text: '  ⏳ Queued (javier offline)', color: 'warning', delay: 800 },
+                { text: '', delay: 400 },
+                { text: '  # 20 minutes later...', color: 'muted', delay: 1000 },
+                { text: '  ✓ Delivered to javier (auto)', color: 'success', delay: 600 },
+              ]}
+            />
             <ScrollReveal delay={0.2}>
               <div>
                 <p className="text-xs font-mono text-zinc-600 uppercase tracking-wider mb-3">
