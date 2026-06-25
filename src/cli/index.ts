@@ -307,6 +307,20 @@ program
     console.log();
   });
 
+program
+  .command('set-address <peer> <address>')
+  .description('Manually set a peer\'s address (ip:port)')
+  .action((peerAlias: string, address: string) => {
+    const p = getPeer(peerAlias);
+    if (!p) {
+      console.error(chalk.red(`  ✗ Peer "${peerAlias}" not found.`));
+      process.exit(1);
+    }
+    const { updatePeerSeen } = require('../contacts/peers.js');
+    updatePeerSeen(peerAlias, address);
+    console.log(`  ${chalk.green('✓')} ${chalk.bold(peerAlias)} address set to ${chalk.cyan(address)}`);
+  });
+
 program.parse();
 
 closeDb();
