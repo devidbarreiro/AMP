@@ -1,53 +1,110 @@
+import { Suspense } from "react";
+import ScrollReveal from "./components/ScrollReveal";
+import NetworkDiagram from "./components/NetworkDiagram";
+import CopyPill from "./components/CopyPill";
+import Terminal from "./components/Terminal";
+import Hero3DWrapper from "./components/Hero3DWrapper";
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#ededed]">
-      {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold tracking-tight">AMP</span>
-            <span className="text-xs text-zinc-500 font-mono">v0.2</span>
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+      {/* ──────────────────────────── Nav ──────────────────────────── */}
+      <nav className="fixed top-0 w-full z-50 bg-[#09090b]/70 backdrop-blur-lg border-b border-zinc-800/50">
+        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="text-lg font-bold tracking-tight text-zinc-100">
+              AMP
+            </span>
+            <span className="text-[10px] text-zinc-600 font-mono tracking-wide">
+              v0.2
+            </span>
           </div>
-          <div className="flex items-center gap-6">
-            <a href="https://github.com/devidbarreiro/AMP" className="text-sm text-zinc-400 hover:text-white transition-colors">GitHub</a>
-            <a href="https://www.npmjs.com/package/amp-protocol" className="text-sm text-zinc-400 hover:text-white transition-colors">npm</a>
-            <a href="#install" className="text-sm bg-white text-black px-4 py-1.5 rounded-full font-medium hover:bg-zinc-200 transition-colors">Install</a>
+          <div className="flex items-center gap-5">
+            <a
+              href="https://github.com/devidbarreiro/AMP"
+              className="text-sm text-zinc-500 hover:text-zinc-200 transition-colors"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://www.npmjs.com/package/amp-protocol"
+              className="text-sm text-zinc-500 hover:text-zinc-200 transition-colors"
+            >
+              npm
+            </a>
+            <a
+              href="#install"
+              className="text-sm text-zinc-950 bg-zinc-100 px-4 py-1.5 rounded-md font-medium hover:bg-white transition-colors"
+            >
+              Install
+            </a>
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="pt-40 pb-24 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 text-xs text-zinc-400 mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Open source &middot; MIT License
-          </div>
-          <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
-            <span className="gradient-text">Agent Messaging</span>
+      {/* ──────────────────────────── Hero ──────────────────────────── */}
+      <section className="relative min-h-[90vh] flex items-center justify-center pt-14">
+        {/* 3D background */}
+        <div className="absolute inset-0 z-0 pointer-events-auto">
+          <Suspense fallback={null}>
+            <Hero3DWrapper />
+          </Suspense>
+        </div>
+
+        {/* Content overlay */}
+        <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+          <p className="text-sm font-mono text-zinc-500 tracking-wide mb-6">
+            Open source. MIT licensed. No servers.
+          </p>
+
+          <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight leading-[1.05] text-zinc-100 mb-6">
+            Agent Messaging
             <br />
             Protocol
           </h1>
-          <p className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-12">
-            P2P encrypted messaging for AI agents. Send messages and files between machines — directly, with no server in the middle. Offline-first. Zero-config on LAN.
+
+          <p className="text-lg text-zinc-400 max-w-xl mx-auto leading-relaxed mb-10">
+            P2P encrypted messaging for AI agents. Direct communication between
+            machines with no server in the middle. Offline-first, zero-config on LAN.
           </p>
-          <div className="code-block max-w-md mx-auto text-left glow">
-            <div className="text-zinc-500 mb-2">$ Install in 30 seconds</div>
-            <div><span className="text-emerald-400">npm</span> install -g amp-protocol</div>
-            <div><span className="text-emerald-400">amp</span> init</div>
+
+          <CopyPill
+            text="npm install -g amp-protocol"
+            className="mx-auto mb-8"
+          />
+
+          <div className="flex items-center justify-center gap-4">
+            <a
+              href="#install"
+              className="text-sm font-medium px-6 py-2.5 rounded-md bg-blue-600 text-white hover:bg-blue-500 transition-colors"
+            >
+              Get Started
+            </a>
+            <a
+              href="https://github.com/devidbarreiro/AMP"
+              className="text-sm font-medium px-6 py-2.5 rounded-md border border-zinc-800 text-zinc-300 hover:border-zinc-600 hover:text-zinc-100 transition-colors"
+            >
+              GitHub
+            </a>
           </div>
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="py-24 px-6 border-t border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4">How it works</h2>
-          <p className="text-zinc-400 text-center mb-16 max-w-xl mx-auto">
-            Your AI agent talks to their AI agent. Encrypted, direct, no middleman.
-          </p>
-          <div className="code-block max-w-3xl mx-auto text-sm">
-            <pre className="text-zinc-400">{`  Your Mac                                    Their Mac
+      {/* ──────────────────────── Architecture ──────────────────────── */}
+      <section className="py-28 px-6">
+        <div className="max-w-3xl mx-auto">
+          <ScrollReveal>
+            <h2 className="text-2xl font-bold mb-3 text-zinc-100">
+              How it works
+            </h2>
+            <p className="text-zinc-500 mb-10 max-w-lg">
+              Your agent talks to their agent. Encrypted, direct, no middleman.
+            </p>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.15}>
+            <div className="bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-lg p-6 overflow-x-auto">
+              <pre className="text-[13px] leading-relaxed text-zinc-500 font-mono whitespace-pre">{`  Your Machine                                Their Machine
 ┌──────────────┐                          ┌──────────────┐
 │ Claude Code  │                          │   Cursor     │
 │      ↕ MCP   │                          │      ↕ MCP   │
@@ -58,229 +115,465 @@ export default function Home() {
 │  │ inbox  │  │     NaCl SecretBox       │  │ inbox  │  │
 │  └────────┘  │                          │  └────────┘  │
 └──────────────┘                          └──────────────┘`}</pre>
-          </div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-24 px-6 border-t border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-16">Built for real teams</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="feature-card">
-              <div className="text-2xl mb-4">🔐</div>
-              <h3 className="text-lg font-semibold mb-2">E2E Encrypted</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                NaCl crypto (same as Signal). Ed25519 identity, X25519 key exchange, SecretBox encryption. Your key never leaves your machine.
-              </p>
-            </div>
-            <div className="feature-card">
-              <div className="text-2xl mb-4">📡</div>
-              <h3 className="text-lg font-semibold mb-2">Zero-config discovery</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Same WiFi? mDNS finds peers instantly. Different networks? Tailscale or STUN hole-punching. Always P2P, never through a server.
-              </p>
-            </div>
-            <div className="feature-card">
-              <div className="text-2xl mb-4">💤</div>
-              <h3 className="text-lg font-semibold mb-2">Offline-first</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Peer offline? Messages queue locally and deliver automatically when they reconnect. No messages lost, ever.
-              </p>
-            </div>
-            <div className="feature-card">
-              <div className="text-2xl mb-4">🔌</div>
-              <h3 className="text-lg font-semibold mb-2">MCP native</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Works with Claude Code, Cursor, Codex, and Windsurf out of the box. &quot;Send this to Javier&quot; just works.
-              </p>
-            </div>
-            <div className="feature-card">
-              <div className="text-2xl mb-4">📎</div>
-              <h3 className="text-lg font-semibold mb-2">File transfer</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Send any file up to 50MB — PDFs, images, spreadsheets, code. Encrypted in transit and at rest.
-              </p>
-            </div>
-            <div className="feature-card">
-              <div className="text-2xl mb-4">👥</div>
-              <h3 className="text-lg font-semibold mb-2">Contact-based</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                You message people, not endpoints. Invite codes with cryptographic verification. Unknown peers are rejected silently.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ──────────────────────── Features ──────────────────────── */}
+      <section className="py-28 px-6 bg-[var(--surface)]">
+        <div className="max-w-5xl mx-auto">
+          <ScrollReveal>
+            <h2 className="text-2xl font-bold mb-16 text-zinc-100">
+              Built for real teams
+            </h2>
+          </ScrollReveal>
 
-      {/* Network layers */}
-      <section className="py-24 px-6 border-t border-white/5">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-16">Three layers of discovery</h2>
-          <div className="space-y-6">
-            <div className="flex items-start gap-6 feature-card">
-              <div className="text-3xl font-bold text-zinc-700 font-mono shrink-0 w-8">1</div>
+          {/* Feature 1: Full-width statement */}
+          <ScrollReveal delay={0.05}>
+            <div className="mb-16">
+              <h3 className="text-4xl sm:text-5xl font-extrabold text-zinc-200 leading-tight max-w-2xl">
+                End-to-end encrypted by default
+              </h3>
+              <p className="text-zinc-500 mt-4 max-w-lg text-lg">
+                NaCl crypto, same as Signal. Ed25519 identity, X25519 key
+                exchange, SecretBox encryption. Your key never leaves your
+                machine.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          {/* Feature 2 + 3: Side by side with code */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+            <ScrollReveal delay={0.1}>
               <div>
-                <h3 className="text-lg font-semibold mb-1">mDNS <span className="text-xs text-emerald-400 font-mono ml-2">same network</span></h3>
-                <p className="text-sm text-zinc-400">Bonjour/Avahi discovery. Agents on the same WiFi find each other instantly. Zero configuration.</p>
+                <p className="text-xs font-mono text-zinc-600 uppercase tracking-wider mb-3">
+                  Discovery
+                </p>
+                <h3 className="text-xl font-bold text-zinc-200 mb-2">
+                  Zero-config peer discovery
+                </h3>
+                <p className="text-zinc-500 text-sm leading-relaxed">
+                  Same WiFi? mDNS finds peers instantly. Different networks?
+                  Tailscale or STUN hole-punching. Always P2P, never through a
+                  server.
+                </p>
               </div>
-            </div>
-            <div className="flex items-start gap-6 feature-card">
-              <div className="text-3xl font-bold text-zinc-700 font-mono shrink-0 w-8">2</div>
+            </ScrollReveal>
+            <ScrollReveal delay={0.2}>
+              <div className="bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-lg p-5">
+                <pre className="text-[13px] leading-relaxed text-zinc-500 font-mono">{`# peer appears on LAN
+amp peers
+  javier  192.168.1.42  (mDNS)  12ms
+
+# or across the internet
+  maria   100.64.0.3    (TS)    34ms`}</pre>
+              </div>
+            </ScrollReveal>
+          </div>
+
+          {/* Feature 4 + 5: reversed layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+            <ScrollReveal delay={0.1}>
+              <div className="bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-lg p-5">
+                <pre className="text-[13px] leading-relaxed text-zinc-500 font-mono">{`# peer goes offline? no problem
+amp send javier "Deploy is ready"
+  ⏳ Queued (javier offline)
+
+# they come back online...
+  ✓ Delivered to javier (auto)`}</pre>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal delay={0.2}>
               <div>
-                <h3 className="text-lg font-semibold mb-1">Tailscale <span className="text-xs text-blue-400 font-mono ml-2">different networks</span></h3>
-                <p className="text-sm text-zinc-400">If both machines have Tailscale, AMP resolves the peer IP automatically every 30 seconds. No manual config.</p>
+                <p className="text-xs font-mono text-zinc-600 uppercase tracking-wider mb-3">
+                  Reliability
+                </p>
+                <h3 className="text-xl font-bold text-zinc-200 mb-2">
+                  Offline-first delivery
+                </h3>
+                <p className="text-zinc-500 text-sm leading-relaxed">
+                  Peer offline? Messages queue locally in SQLite and deliver
+                  automatically when they reconnect. No messages lost.
+                </p>
               </div>
-            </div>
-            <div className="flex items-start gap-6 feature-card">
-              <div className="text-3xl font-bold text-zinc-700 font-mono shrink-0 w-8">3</div>
+            </ScrollReveal>
+          </div>
+
+          {/* Feature 6: Compact pair */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-10">
+            <ScrollReveal delay={0.1}>
               <div>
-                <h3 className="text-lg font-semibold mb-1">STUN <span className="text-xs text-purple-400 font-mono ml-2">raw internet</span></h3>
-                <p className="text-sm text-zinc-400">Discovers your public IP via Google STUN servers for NAT hole-punching. The STUN server never sees your messages — only your public address.</p>
+                <p className="text-xs font-mono text-zinc-600 uppercase tracking-wider mb-3">
+                  Integration
+                </p>
+                <h3 className="text-lg font-bold text-zinc-200 mb-2">
+                  MCP native
+                </h3>
+                <p className="text-zinc-500 text-sm leading-relaxed">
+                  Works with Claude Code, Cursor, Codex, and Windsurf out of the
+                  box. &quot;Send this to Javier&quot; just works.
+                </p>
               </div>
-            </div>
+            </ScrollReveal>
+            <ScrollReveal delay={0.2}>
+              <div>
+                <p className="text-xs font-mono text-zinc-600 uppercase tracking-wider mb-3">
+                  Transfer
+                </p>
+                <h3 className="text-lg font-bold text-zinc-200 mb-2">
+                  Encrypted file sharing
+                </h3>
+                <p className="text-zinc-500 text-sm leading-relaxed">
+                  Send any file up to 50MB. PDFs, images, spreadsheets, code.
+                  Encrypted in transit and at rest.
+                </p>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
-      {/* Install */}
-      <section id="install" className="py-24 px-6 border-t border-white/5">
+      {/* ──────────────────── Network Discovery ──────────────────── */}
+      <section className="py-28 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-16">Get started in 30 seconds</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <div className="text-xs font-mono text-zinc-500 mb-3 uppercase tracking-wider">Step 1 — Install & init</div>
-              <div className="code-block">
-                <div><span className="text-emerald-400">npm</span> install -g amp-protocol</div>
-                <div><span className="text-emerald-400">amp</span> init</div>
+          <ScrollReveal>
+            <h2 className="text-2xl font-bold text-center mb-3 text-zinc-100">
+              Three layers of discovery
+            </h2>
+            <p className="text-zinc-500 text-center mb-16 max-w-md mx-auto">
+              AMP tries each layer in order. The first one that connects wins.
+            </p>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <ScrollReveal delay={0.1}>
+              <div className="space-y-8">
+                <div>
+                  <div className="flex items-center gap-3 mb-1.5">
+                    <span className="text-xs font-mono font-bold text-emerald-500">
+                      01
+                    </span>
+                    <h3 className="text-base font-semibold text-zinc-200">
+                      mDNS
+                    </h3>
+                    <span className="text-[10px] font-mono text-zinc-600">
+                      same network
+                    </span>
+                  </div>
+                  <p className="text-sm text-zinc-500 pl-9">
+                    Bonjour/Avahi discovery. Agents on the same WiFi find each
+                    other instantly. Zero configuration.
+                  </p>
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-3 mb-1.5">
+                    <span className="text-xs font-mono font-bold text-blue-500">
+                      02
+                    </span>
+                    <h3 className="text-base font-semibold text-zinc-200">
+                      Tailscale
+                    </h3>
+                    <span className="text-[10px] font-mono text-zinc-600">
+                      different networks
+                    </span>
+                  </div>
+                  <p className="text-sm text-zinc-500 pl-9">
+                    If both machines run Tailscale, AMP resolves the peer IP
+                    automatically every 30 seconds. No manual config.
+                  </p>
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-3 mb-1.5">
+                    <span className="text-xs font-mono font-bold text-purple-500">
+                      03
+                    </span>
+                    <h3 className="text-base font-semibold text-zinc-200">
+                      STUN
+                    </h3>
+                    <span className="text-[10px] font-mono text-zinc-600">
+                      raw internet
+                    </span>
+                  </div>
+                  <p className="text-sm text-zinc-500 pl-9">
+                    Discovers your public IP via STUN servers for NAT
+                    hole-punching. The STUN server never sees your messages,
+                    only your public address.
+                  </p>
+                </div>
               </div>
-            </div>
-            <div>
-              <div className="text-xs font-mono text-zinc-500 mb-3 uppercase tracking-wider">Step 2 — Connect</div>
-              <div className="code-block">
-                <div><span className="text-emerald-400">amp</span> invite</div>
-                <div className="text-zinc-600"># share the code with a peer</div>
-                <div><span className="text-emerald-400">amp</span> join amp://invite/...</div>
-              </div>
-            </div>
-            <div>
-              <div className="text-xs font-mono text-zinc-500 mb-3 uppercase tracking-wider">Step 3 — Send messages</div>
-              <div className="code-block">
-                <div><span className="text-emerald-400">amp</span> send javier &quot;Check this PR&quot;</div>
-                <div><span className="text-emerald-400">amp</span> send javier -f report.pdf &quot;Q2&quot;</div>
-              </div>
-            </div>
-            <div>
-              <div className="text-xs font-mono text-zinc-500 mb-3 uppercase tracking-wider">Step 4 — Or let your AI do it</div>
-              <div className="code-block">
-                <div className="text-zinc-400">&gt; Send this to Javier via AMP</div>
-                <div className="text-zinc-400">&gt; Any messages for me?</div>
-                <div className="text-zinc-400">&gt; Reply to Javier&apos;s message</div>
-              </div>
-            </div>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.25}>
+              <NetworkDiagram />
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
-      {/* Comparison */}
-      <section className="py-24 px-6 border-t border-white/5">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-16">Compared to alternatives</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left py-3 px-4 font-medium text-zinc-400"></th>
-                  <th className="text-center py-3 px-4 font-bold">AMP</th>
-                  <th className="text-center py-3 px-4 font-medium text-zinc-400">c2c</th>
-                  <th className="text-center py-3 px-4 font-medium text-zinc-400">MeshTerm</th>
-                  <th className="text-center py-3 px-4 font-medium text-zinc-400">Google A2A</th>
-                </tr>
-              </thead>
-              <tbody className="text-zinc-400">
-                <tr className="border-b border-white/5">
-                  <td className="py-3 px-4">P2P (no server)</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">relay</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">broker</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">HTTP</td>
-                </tr>
-                <tr className="border-b border-white/5">
-                  <td className="py-3 px-4">E2E encrypted</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓ NaCl</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">TLS</td>
-                </tr>
-                <tr className="border-b border-white/5">
-                  <td className="py-3 px-4">Offline delivery</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                </tr>
-                <tr className="border-b border-white/5">
-                  <td className="py-3 px-4">Zero-config LAN</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓ mDNS</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                </tr>
-                <tr className="border-b border-white/5">
-                  <td className="py-3 px-4">MCP native</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                </tr>
-                <tr className="border-b border-white/5">
-                  <td className="py-3 px-4">Open source</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓ MIT</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">closed</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓</td>
-                </tr>
-                <tr>
-                  <td className="py-3 px-4">File transfer</td>
-                  <td className="text-center py-3 px-4 text-emerald-400">✓ 50MB</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                  <td className="text-center py-3 px-4 text-zinc-600">—</td>
-                </tr>
-              </tbody>
-            </table>
+      {/* ──────────────────────── Terminal ──────────────────────── */}
+      <section className="py-28 px-6 bg-[var(--surface)]">
+        <div className="max-w-3xl mx-auto">
+          <ScrollReveal>
+            <h2 className="text-2xl font-bold text-center mb-3 text-zinc-100">
+              See it in action
+            </h2>
+            <p className="text-zinc-500 text-center mb-12 max-w-md mx-auto">
+              Install, connect, and start messaging in under a minute.
+            </p>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.15}>
+            <Terminal />
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ──────────────────────── Security ──────────────────────── */}
+      <section className="py-28 px-6">
+        <div className="max-w-3xl mx-auto">
+          <ScrollReveal>
+            <h2 className="text-2xl font-bold mb-3 text-zinc-100">
+              Security by default
+            </h2>
+            <p className="text-zinc-500 mb-10 max-w-lg">
+              Not an afterthought. Every message is encrypted before it leaves
+              your machine.
+            </p>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.1}>
+            <div className="space-y-0">
+              {[
+                { label: "Identity", value: "Ed25519 keypair" },
+                { label: "Exchange", value: "X25519 ECDH" },
+                { label: "Encryption", value: "XSalsa20-Poly1305 (NaCl)" },
+                { label: "Trust model", value: "TOFU, same as SSH" },
+                { label: "Contacts", value: "Whitelist-only" },
+                { label: "At rest", value: "~/.amp/ mode 700" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="flex items-baseline py-3 border-b border-zinc-800/50"
+                >
+                  <span className="text-sm font-mono text-zinc-600 w-32 shrink-0">
+                    {item.label}
+                  </span>
+                  <span className="text-sm text-zinc-300">{item.value}</span>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ──────────────────────── Install ──────────────────────── */}
+      <section id="install" className="py-28 px-6 bg-[var(--surface)]">
+        <div className="max-w-3xl mx-auto">
+          <ScrollReveal>
+            <h2 className="text-2xl font-bold mb-12 text-zinc-100">
+              Get started
+            </h2>
+          </ScrollReveal>
+
+          <div className="space-y-10">
+            <ScrollReveal delay={0.05}>
+              <div>
+                <p className="text-xs font-mono text-zinc-600 uppercase tracking-wider mb-3">
+                  Step 1. Install and initialize
+                </p>
+                <div className="bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-lg p-5">
+                  <pre className="text-[13px] leading-loose text-zinc-400 font-mono">
+                    <span className="text-zinc-600">$</span>{" "}
+                    <span className="text-zinc-300">npm install -g amp-protocol</span>
+                    {"\n"}
+                    <span className="text-zinc-600">$</span>{" "}
+                    <span className="text-zinc-300">amp init</span>
+                  </pre>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.1}>
+              <div>
+                <p className="text-xs font-mono text-zinc-600 uppercase tracking-wider mb-3">
+                  Step 2. Connect with a peer
+                </p>
+                <div className="bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-lg p-5">
+                  <pre className="text-[13px] leading-loose text-zinc-400 font-mono">
+                    <span className="text-zinc-600">$</span>{" "}
+                    <span className="text-zinc-300">amp invite</span>
+                    {"\n"}
+                    <span className="text-zinc-600"># share the code with a peer</span>
+                    {"\n"}
+                    <span className="text-zinc-600">$</span>{" "}
+                    <span className="text-zinc-300">amp join amp://invite/...</span>
+                  </pre>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.15}>
+              <div>
+                <p className="text-xs font-mono text-zinc-600 uppercase tracking-wider mb-3">
+                  Step 3. Send messages
+                </p>
+                <div className="bg-[var(--surface-2)] border border-[var(--border-subtle)] rounded-lg p-5">
+                  <pre className="text-[13px] leading-loose text-zinc-400 font-mono">
+                    <span className="text-zinc-600">$</span>{" "}
+                    <span className="text-zinc-300">
+                      amp send javier &quot;Check this PR&quot;
+                    </span>
+                    {"\n"}
+                    <span className="text-zinc-600">$</span>{" "}
+                    <span className="text-zinc-300">
+                      amp send javier -f report.pdf &quot;Q2 numbers&quot;
+                    </span>
+                    {"\n"}
+                    {"\n"}
+                    <span className="text-zinc-600"># or let your AI handle it</span>
+                    {"\n"}
+                    <span className="text-zinc-500">
+                      &gt; &quot;Send this to Javier via AMP&quot;
+                    </span>
+                  </pre>
+                </div>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
-      {/* Security */}
-      <section className="py-24 px-6 border-t border-white/5">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">Security by default</h2>
-          <p className="text-zinc-400 mb-12 max-w-xl mx-auto">
-            Not an afterthought. Every message is encrypted before it leaves your machine.
-          </p>
-          <div className="code-block text-left max-w-lg mx-auto text-sm">
-            <div><span className="text-zinc-500">Identity</span>     Ed25519 keypair</div>
-            <div><span className="text-zinc-500">Exchange</span>     X25519 ECDH</div>
-            <div><span className="text-zinc-500">Encryption</span>   XSalsa20-Poly1305 (NaCl)</div>
-            <div><span className="text-zinc-500">Trust</span>        TOFU (like SSH)</div>
-            <div><span className="text-zinc-500">Contacts</span>     Whitelist-only</div>
-            <div><span className="text-zinc-500">At rest</span>      ~/.amp/ mode 700</div>
-          </div>
+      {/* ──────────────────── Comparison ──────────────────── */}
+      <section className="py-28 px-6">
+        <div className="max-w-3xl mx-auto">
+          <ScrollReveal>
+            <h2 className="text-2xl font-bold mb-10 text-zinc-100">
+              Compared to alternatives
+            </h2>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.1}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-800">
+                    <th className="text-left py-3 pr-6 font-normal text-zinc-600" />
+                    <th className="text-center py-3 px-4 font-semibold text-zinc-200">
+                      AMP
+                    </th>
+                    <th className="text-center py-3 px-4 font-normal text-zinc-600">
+                      c2c
+                    </th>
+                    <th className="text-center py-3 px-4 font-normal text-zinc-600">
+                      MeshTerm
+                    </th>
+                    <th className="text-center py-3 px-4 font-normal text-zinc-600">
+                      Google A2A
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-zinc-500">
+                  {[
+                    {
+                      feature: "P2P (no server)",
+                      amp: "yes",
+                      c2c: "relay",
+                      mesh: "broker",
+                      a2a: "HTTP",
+                    },
+                    {
+                      feature: "E2E encrypted",
+                      amp: "NaCl",
+                      c2c: "no",
+                      mesh: "no",
+                      a2a: "TLS",
+                    },
+                    {
+                      feature: "Offline delivery",
+                      amp: "yes",
+                      c2c: "no",
+                      mesh: "no",
+                      a2a: "no",
+                    },
+                    {
+                      feature: "Zero-config LAN",
+                      amp: "mDNS",
+                      c2c: "no",
+                      mesh: "no",
+                      a2a: "no",
+                    },
+                    {
+                      feature: "MCP native",
+                      amp: "yes",
+                      c2c: "yes",
+                      mesh: "yes",
+                      a2a: "no",
+                    },
+                    {
+                      feature: "Open source",
+                      amp: "MIT",
+                      c2c: "closed",
+                      mesh: "yes",
+                      a2a: "yes",
+                    },
+                    {
+                      feature: "File transfer",
+                      amp: "50MB",
+                      c2c: "no",
+                      mesh: "no",
+                      a2a: "no",
+                    },
+                  ].map((row) => (
+                    <tr key={row.feature} className="border-b border-zinc-900">
+                      <td className="py-3 pr-6 text-zinc-400">
+                        {row.feature}
+                      </td>
+                      <td className="text-center py-3 px-4 text-zinc-200 font-medium">
+                        {row.amp}
+                      </td>
+                      <td className="text-center py-3 px-4 text-zinc-700">
+                        {row.c2c}
+                      </td>
+                      <td className="text-center py-3 px-4 text-zinc-700">
+                        {row.mesh}
+                      </td>
+                      <td className="text-center py-3 px-4 text-zinc-700">
+                        {row.a2a}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-16 px-6 border-t border-white/5">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <span className="text-xl font-bold">AMP</span>
-            <span className="text-zinc-500 text-sm ml-3">Agent Messaging Protocol</span>
+      {/* ──────────────────────── Footer ──────────────────────── */}
+      <footer className="py-12 px-6 border-t border-zinc-800/50">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="text-base font-bold text-zinc-300">AMP</span>
+            <span className="text-xs text-zinc-600">
+              Agent Messaging Protocol
+            </span>
           </div>
-          <div className="flex items-center gap-8 text-sm text-zinc-500">
-            <a href="https://github.com/devidbarreiro/AMP" className="hover:text-white transition-colors">GitHub</a>
-            <a href="https://www.npmjs.com/package/amp-protocol" className="hover:text-white transition-colors">npm</a>
+          <div className="flex items-center gap-6 text-sm text-zinc-600">
+            <a
+              href="https://github.com/devidbarreiro/AMP"
+              className="hover:text-zinc-300 transition-colors"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://www.npmjs.com/package/amp-protocol"
+              className="hover:text-zinc-300 transition-colors"
+            >
+              npm
+            </a>
             <span>MIT License</span>
           </div>
         </div>
