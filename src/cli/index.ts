@@ -47,13 +47,14 @@ program
       }
     }
 
-    // Configure MCP for Claude Code
+    // Configure MCP for detected AI tools
     if (opts.mcp !== false) {
-      try {
-        configureMcp();
-        console.log(chalk.green('✓ MCP configured for Claude Code'));
-      } catch (err) {
-        console.log(chalk.yellow(`⚠ MCP config skipped: ${(err as Error).message}`));
+      const configured = configureMcp();
+      if (configured.length > 0) {
+        console.log(chalk.green(`✓ MCP configured for: ${configured.join(', ')}`));
+        console.log(chalk.dim('  Restart your AI tool to activate AMP tools.'));
+      } else {
+        console.log(chalk.dim('  No AI tools detected. Run `amp-mcp` manually as MCP server.'));
       }
     }
 
@@ -61,22 +62,83 @@ program
     console.log(chalk.dim('  Run `amp invite` to connect with someone.\n'));
   });
 
-function configureMcp(): void {
-  const claudeConfigPath = join(homedir(), '.claude.json');
-  let config: Record<string, unknown> = {};
+interface McpTarget {
+  name: string;
+  configPath: string;
+  configKey: string;
+  format: 'json' | 'json-nested';
+}
 
-  if (existsSync(claudeConfigPath)) {
-    config = JSON.parse(readFileSync(claudeConfigPath, 'utf-8'));
+function detectMcpTargets(): McpTarget[] {
+  const home = homedir();
+  const targets: McpTarget[] = [];
+
+  // Claude Code
+  const claudePath = join(home, '.claude.json');
+  if (existsSync(claudePath) || existsSync(join(home, '.claude'))) {
+    targets.push({ name: 'Claude Code', configPath: claudePath, configKey: 'mcpServers', format: 'json' });
   }
 
-  const mcpServers = (config.mcpServers ?? {}) as Record<string, unknown>;
-  mcpServers['amp'] = {
-    command: 'amp-mcp',
-    args: [],
-  };
-  config.mcpServers = mcpServers;
+  // Cursor
+  const cursorPath = join(home, '.cursor', 'mcp.json');
+  if (existsSync(join(home, '.cursor'))) {
+    targets.push({ name: 'Cursor', configPath: cursorPath, configKey: 'mcpServers', format: 'json' });
+  }
 
-  writeFileSync(claudeConfigPath, JSON.stringify(config, null, 2));
+  // Codex
+  const codexPath = join(home, '.codex', 'config.toml');
+  if (existsSync(codexPath)) {
+    targets.push({ name: 'Codex', configPath: codexPath, configKey: 'mcpServers', format: 'json' });
+  }
+
+  // Windsurf / Codeium
+  const windsurfPath = join(home, '.codeium', 'windsurf', 'mcp_config.json');
+  if (existsSync(join(home, '.codeium'))) {
+    targets.push({ name: 'Windsurf', configPath: windsurfPath, configKey: 'mcpServers', format: 'json' });
+  }
+
+  return targets;
+}
+
+function findAmpMcpBinary(): string {
+  try {
+    const { execSync } = require('node:child_process');
+    return execSync('which amp-mcp', { encoding: 'utf-8' }).trim();
+  } catch {
+    return 'amp-mcp';
+  }
+}
+
+function configureMcp(): string[] {
+  const targets = detectMcpTargets();
+  const ampMcpPath = findAmpMcpBinary();
+  const configured: string[] = [];
+
+  for (const target of targets) {
+    try {
+      let config: Record<string, unknown> = {};
+      if (existsSync(target.configPath)) {
+        config = JSON.parse(readFileSync(target.configPath, 'utf-8'));
+      }
+
+      const servers = (config[target.configKey] ?? {}) as Record<string, unknown>;
+      servers['amp'] = { command: ampMcpPath, args: [] };
+      config[target.configKey] = servers;
+
+      const dir = join(target.configPath, '..');
+      if (!existsSync(dir)) {
+        const { mkdirSync } = require('node:fs');
+        mkdirSync(dir, { recursive: true });
+      }
+
+      writeFileSync(target.configPath, JSON.stringify(config, null, 2));
+      configured.push(target.name);
+    } catch {
+      // skip silently
+    }
+  }
+
+  return configured;
 }
 
 program

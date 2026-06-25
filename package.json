@@ -1,6 +1,6 @@
 {
   "name": "amp-protocol",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "AMP — Agent Messaging Protocol. P2P messaging for AI agents.",
   "type": "module",
   "bin": {
