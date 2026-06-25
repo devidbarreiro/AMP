@@ -11,8 +11,10 @@ import { addPeer } from '../contacts/peers.js';
 import util from 'tweetnacl-util';
 const { decodeBase64 } = util;
 import { hostname } from 'node:os';
-import { readFileSync, statSync } from 'node:fs';
-import { basename } from 'node:path';
+import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
+import { basename, join } from 'node:path';
+import { homedir } from 'node:os';
+import { installDaemon, isDaemonRunning } from '../daemon/install.js';
 
 const program = new Command();
 
@@ -23,15 +25,59 @@ program
 
 program
   .command('init')
-  .description('Initialize AMP — generate identity and create data directory')
-  .action(() => {
+  .description('Initialize AMP — identity + daemon + MCP config')
+  .option('--no-daemon', 'Skip daemon installation')
+  .option('--no-mcp', 'Skip MCP configuration')
+  .action((opts: { daemon?: boolean; mcp?: boolean }) => {
     const identity = ensureIdentity();
     getDb();
     const fp = fingerprint(identity.publicKey);
-    console.log(chalk.green('✓ AMP initialized'));
-    console.log(`  Identity: ${chalk.cyan(fp)}`);
-    console.log(`  Data dir: ${chalk.dim('~/.amp/')}`);
+    console.log(chalk.green('✓ Identity created'));
+    console.log(`  Fingerprint: ${chalk.cyan(fp)}`);
+    console.log(`  Data dir:    ${chalk.dim('~/.amp/')}`);
+
+    // Install daemon
+    if (opts.daemon !== false) {
+      try {
+        const { plistPath } = installDaemon();
+        console.log(chalk.green('✓ Daemon installed (auto-start on login)'));
+        console.log(`  Port: ${chalk.dim('9800')}`);
+      } catch (err) {
+        console.log(chalk.yellow(`⚠ Daemon install skipped: ${(err as Error).message}`));
+      }
+    }
+
+    // Configure MCP for Claude Code
+    if (opts.mcp !== false) {
+      try {
+        configureMcp();
+        console.log(chalk.green('✓ MCP configured for Claude Code'));
+      } catch (err) {
+        console.log(chalk.yellow(`⚠ MCP config skipped: ${(err as Error).message}`));
+      }
+    }
+
+    console.log(chalk.bold('\n  AMP is ready!'));
+    console.log(chalk.dim('  Run `amp invite` to connect with someone.\n'));
   });
+
+function configureMcp(): void {
+  const claudeConfigPath = join(homedir(), '.claude.json');
+  let config: Record<string, unknown> = {};
+
+  if (existsSync(claudeConfigPath)) {
+    config = JSON.parse(readFileSync(claudeConfigPath, 'utf-8'));
+  }
+
+  const mcpServers = (config.mcpServers ?? {}) as Record<string, unknown>;
+  mcpServers['amp'] = {
+    command: 'amp-mcp',
+    args: [],
+  };
+  config.mcpServers = mcpServers;
+
+  writeFileSync(claudeConfigPath, JSON.stringify(config, null, 2));
+}
 
 program
   .command('status')

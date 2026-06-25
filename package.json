@@ -4,7 +4,9 @@
   "description": "AMP — Agent Messaging Protocol. P2P messaging for AI agents.",
   "type": "module",
   "bin": {
-    "amp": "./dist/cli/index.js"
+    "amp": "./dist/cli/index.js",
+    "amp-mcp": "./dist/mcp/index.js",
+    "amp-daemon": "./dist/daemon/index.js"
   },
   "scripts": {
     "build": "tsc",
