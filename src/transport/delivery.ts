@@ -68,6 +68,7 @@ async function deliverPendingMessages(): Promise<void> {
     const peer = getPeer(peerAlias);
 
     if (!peer) {
+      console.log(`[delivery] Peer "${peerAlias}" not found in contacts — available peers:`, listPeers().map(p => p.alias));
       for (const msg of messages) {
         markFailed(msg.id, 'Peer not found in contacts');
       }

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { startDaemon } from './server.js';
 import { startDiscovery, stopDiscovery } from '../transport/mdns.js';
 import { startDeliveryLoop, stopDeliveryLoop, registerPeerAddress } from '../transport/delivery.js';

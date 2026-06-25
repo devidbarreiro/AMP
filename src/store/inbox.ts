@@ -19,6 +19,26 @@ export interface Message {
   error: string | null;
 }
 
+function mapRow(row: Record<string, unknown>): Message {
+  return {
+    id: row.id as string,
+    fromPeer: row.from_peer as string,
+    toPeer: row.to_peer as string,
+    content: row.content as string | null,
+    filePath: row.file_path as string | null,
+    fileName: row.file_name as string | null,
+    fileSize: row.file_size as number | null,
+    direction: row.direction as Message['direction'],
+    status: row.status as Message['status'],
+    priority: row.priority as number,
+    createdAt: row.created_at as string,
+    deliveredAt: row.delivered_at as string | null,
+    readAt: row.read_at as string | null,
+    retryCount: row.retry_count as number,
+    error: row.error as string | null,
+  };
+}
+
 export function queueOutbound(toPeer: string, content: string, filePath?: string, fileName?: string, fileSize?: number): string {
   const db = getDb();
   const id = randomUUID();
@@ -45,7 +65,7 @@ export function getUnreadInbox(): Message[] {
     SELECT * FROM messages
     WHERE direction = 'inbound' AND status IN ('delivered', 'pending')
     ORDER BY priority DESC, created_at DESC
-  `).all() as Message[];
+  `).all().map(r => mapRow(r as Record<string, unknown>));
 }
 
 export function getAllInbox(limit = 50): Message[] {
@@ -55,7 +75,7 @@ export function getAllInbox(limit = 50): Message[] {
     WHERE direction = 'inbound'
     ORDER BY created_at DESC
     LIMIT ?
-  `).all(limit) as Message[];
+  `).all(limit).map(r => mapRow(r as Record<string, unknown>));
 }
 
 export function markAsRead(id: string): void {
@@ -73,13 +93,13 @@ export function getPendingOutbound(toPeer?: string): Message[] {
       SELECT * FROM messages
       WHERE direction = 'outbound' AND status = 'pending' AND to_peer = ?
       ORDER BY priority DESC, created_at ASC
-    `).all(toPeer) as Message[];
+    `).all(toPeer).map(r => mapRow(r as Record<string, unknown>));
   }
   return db.prepare(`
     SELECT * FROM messages
     WHERE direction = 'outbound' AND status = 'pending'
     ORDER BY priority DESC, created_at ASC
-  `).all() as Message[];
+  `).all().map(r => mapRow(r as Record<string, unknown>));
 }
 
 export function markDelivered(id: string): void {
